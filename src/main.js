@@ -3,5 +3,5 @@ document.addEventListener('DOMContentLoaded', () => {
     juego.configurarTeclas();
     // Asegurar que inicie en el menú
     juego.enMenu = true;
-    document.getElementById('menuScreen').classList.remove('hidden');
+    document.getElementById('pantallsMenu').classList.remove('hidden');
 });
