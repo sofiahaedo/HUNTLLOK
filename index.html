@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Caza</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="gameContainer" class="hidden">
+        <div id="ui">
+            <div id="stats">
+                <span>Vida: <span id="vida">100</span></span>
+                <span>Puntos: <span id="puntos">0</span></span>
+                <span>Arma: <span id="arma">Pistola</span></span>
+                <span>Munición: <span id="municion">15</span></span>
+            </div>
+            <div id="controls">
+                <p>Controles: WASD mover, Flechas disparar, 1-3 cambiar arma, R recargar, P pausa, Enter reiniciar</p>
+            </div>
+        </div>
+        <canvas id="gameCanvas" width="720" height="400"></canvas>
+        <div id="gameOver" class="hidden">
+            <h2>Juego Terminado</h2>
+            <p>Puntaje Final: <span id="puntajeFinal">0</span></p>
+            <button onclick="juego.reiniciar()">Jugar de Nuevo</button>
+        </div>
+        <div id="pauseScreen" class="hidden">
+            <h2>PAUSA</h2>
+            <p>Presiona P para continuar</p>
+        </div>
+    </div>
+    
+    <div id="menuScreen">
+        <h1>JUEGO DE CAZA</h1>
+        <div class="menu-options">
+            <p>1 - Jugar</p>
+            <p>2 - Tabla de Posiciones</p>
+            <p>3 - Salir</p>
+        </div>
+    </div>
+    
+    <div id="scoreScreen" class="hidden">
+        <h2>TABLA DE POSICIONES</h2>
+        <div id="scoreList"></div>
+        <p>Presiona ESC para volver al menú</p>
+    </div>
+    
+    <div id="saveScoreScreen" class="hidden">
+        <h2>¿Guardar Puntaje?</h2>
+        <p>Puntaje: <span id="finalScore">0</span></p>
+        <p>S - Sí, guardar puntaje</p>
+        <p>N - No, volver al menú</p>
+    </div>
+    
+    <div id="nameInputScreen" class="hidden">
+        <h2>Ingresa tu nombre</h2>
+        <input type="text" id="playerName" maxlength="15" placeholder="Tu nombre">
+        <p>Presiona Enter para guardar</p>
+    </div>
+    
+    <script src="src/armas.js"></script>
+    <script src="src/animales.js"></script>
+    <script src="src/bala.js"></script>
+    <script src="src/cazador.js"></script>
+    <script src="src/puntajes.js"></script>
+    <script src="src/juego.js"></script>
+    <script src="src/main.js"></script>
+</body>
+</html>
