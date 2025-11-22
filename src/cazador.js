@@ -12,7 +12,7 @@ class Cazador {
         this.height = 40;
         this.velocidad = 3;
         this.imagen = new Image();
-        this.imagen.src = 'assets/cazador.jpg';
+        this.imagen.src = 'assets/cazador.png';
         this.teclas = {};
         this.direccionX = 0;
         this.direccionY = -1;

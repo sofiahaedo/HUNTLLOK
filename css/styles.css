@@ -84,10 +84,21 @@ body {
     margin-bottom: 30px;
 }
 
-.menu-options p {
+/* .menu-options p {
     font-size: 20px;
     margin: 15px 0;
     color: #ecf0f1;
+} */
+
+.menu-options button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
 }
 
 #scoreList {
