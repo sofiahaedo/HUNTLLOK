@@ -105,21 +105,115 @@ class Oso extends Animal {
     constructor(x, y) {
         super(x, y, 150, 50);
         this.nombre = "Oso";
-        this.color = "#654321";
         this.velocidad = 1;
         this.rangoDeteccion = 150;
         
+        // Cargar sprite sheet
+        this.spriteSheet = new Image();
+        this.spriteSheet.src = './assets/oso-idle-2.png';
+        this.imagenCargada = false;
+        
+        this.spriteSheet.onload = () => {
+            this.imagenCargada = true;
+            console.log("✅ Sprite del oso cargado!");
+            console.log("   Tamaño:", this.spriteSheet.width, "x", this.spriteSheet.height);
+        };
+        
+        this.spriteSheet.onerror = () => {
+            console.error("❌ Error al cargar sprite del oso");
+        };
+        
+        // CONFIGURACIÓN PARA TU SPRITE
+        this.frameWidth = 64;      //64px
+        this.frameHeight = 64;     //64px
+        this.framesPorFila = 8;    //8 frames
+        
+        this.currentFrame = 0;
+        this.frameCounter = 0;
+        this.frameRate = 10;       // Ajustá si querés más rápido/lento
+        
+        this.direccion = 2;        // Empieza mirando abajo
+        this.estaPersiguiendo = false;
     }
-
+    
+    actualizarAnimacion() {
+        if (!this.imagenCargada) return;
+        
+        this.frameCounter++;
+        
+        if (this.frameCounter >= this.frameRate) {
+            this.frameCounter = 0;
+            this.currentFrame++;
+            
+            if (this.currentFrame >= this.framesPorFila) {
+                this.currentFrame = 0;
+            }
+        }
+    }
+    
+    calcularDireccion(dx, dy) {
+        const angulo = Math.atan2(dy, dx);
+        
+        if (angulo > -Math.PI/4 && angulo <= Math.PI/4) {
+            return 2;  // Derecha →
+        } else if (angulo > Math.PI/4 && angulo <= 3*Math.PI/4) {
+            return 1;  // Abajo ↓
+        } else if (angulo > 3*Math.PI/4 || angulo <= -3*Math.PI/4) {
+            return 3;  // Izquierda ←
+        } else {
+            return 0    ;  // Arriba ↑
+        }
+    }
+    
+    dibujar(ctx) {
+        if (!this.estaVivo()) return;
+        
+        if (!this.imagenCargada) {
+            ctx.fillStyle = "#654321";
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.fillText(this.nombre, this.x, this.y - 5);
+            return;
+        }
+        
+        this.actualizarAnimacion();
+        
+        const frameX = this.currentFrame * this.frameWidth;
+        const frameY = this.direccion * this.frameHeight;
+        
+        ctx.drawImage(
+            this.spriteSheet,
+            frameX, frameY, this.frameWidth, this.frameHeight,
+            this.x, this.y, this.width, this.height
+        );
+        
+        ctx.fillStyle = 'white';
+        ctx.font = '12px Arial';
+        ctx.fillText(this.nombre, this.x, this.y - 5);
+        
+        // // Debug
+        // ctx.fillStyle = 'yellow';
+        // ctx.font = '10px Arial';
+        // const simboloDireccion = ['espaldas', 'frente', '→', '←'][this.direccion];
+        // ctx.fillText(`${simboloDireccion} F:${this.currentFrame}`, this.x, this.y + this.height + 15);
+    }
+    
     perseguir(cazador) {    
-        if (!this.estaVivo()) return;        
+        if (!this.estaVivo()) return;
+        
         const dx = cazador.x - this.x;
         const dy = cazador.y - this.y;
         const distancia = Math.sqrt(dx * dx + dy * dy);
         
         if (distancia <= this.rangoDeteccion && distancia > 0) {
+            this.estaPersiguiendo = true;
+            this.direccion = this.calcularDireccion(dx, dy);
+            
             this.x += (dx / distancia) * this.velocidad;
             this.y += (dy / distancia) * this.velocidad;
+        } else {
+            this.estaPersiguiendo = false;
         }
     }
 
@@ -128,7 +222,6 @@ class Oso extends Animal {
             cazador.recibirDaño(20);
         }
     }
-
 }
 
 
