@@ -9,6 +9,7 @@ class Arma {
     }
 
     usar(objetivo) {
+        console.log(`Usando ${this.nombre} contra objetivo en (${objetivo.x}, ${objetivo.y})`);
         if (this.tieneMunicion()) {
             objetivo.recibirDaño(this.daño);
             this.municion--;

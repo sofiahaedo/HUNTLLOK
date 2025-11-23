@@ -9,7 +9,7 @@ body {
     overflow: hidden;
 }
 
-#gameContainer {
+#tablero {
     max-width: 800px;
     margin: 20px auto;
     position: relative;
@@ -38,7 +38,7 @@ body {
     display: block;
 }
 
-#gameOver, #pauseScreen {
+#gameOver, #PantallaPausa {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -60,13 +60,13 @@ body {
     cursor: pointer;
 }
 
-#pauseScreen h2 {
+#PantallaPausa h2 {
     font-size: 48px;
     margin: 0 0 20px 0;
     color: #f39c12;
 }
 
-#menuScreen, #scoreScreen {
+#pantallsMenu, #pantallaPuntos {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -78,16 +78,27 @@ body {
     z-index: 1000;
 }
 
-#menuScreen h1 {
+#pantallsMenu h1 {
     font-size: 36px;
     color: #e74c3c;
     margin-bottom: 30px;
 }
 
-.menu-options p {
+/* .menu-options p {
     font-size: 20px;
     margin: 15px 0;
     color: #ecf0f1;
+} */
+
+.menu-options button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
 }
 
 #scoreList {
@@ -95,7 +106,7 @@ body {
     font-size: 18px;
 }
 
-#saveScoreScreen, #nameInputScreen {
+#salvarPuntos, #pantallaNombre {
     position: fixed;
     top: 50%;
     left: 50%;
