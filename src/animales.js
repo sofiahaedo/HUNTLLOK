@@ -105,6 +105,8 @@ class Oso extends Animal {
     constructor(x, y) {
         super(x, y, 150, 50);
         this.nombre = "Oso";
+        this.width = 80;  // Mucho más grande que el cazador
+        this.height = 80;
         this.velocidad = 1;
         this.rangoDeteccion = 150;
         
@@ -130,7 +132,8 @@ class Oso extends Animal {
         
         this.currentFrame = 0;
         this.frameCounter = 0;
-        this.frameRate = 10;       // Ajustá si querés más rápido/lento
+        this.frameRate = 10;       // Velocidad normal
+        this.idleFrameRate = 30;   // Velocidad idle (más lento)
         
         this.direccion = 2;        // Empieza mirando abajo
         this.estaPersiguiendo = false;
@@ -141,11 +144,17 @@ class Oso extends Animal {
         
         this.frameCounter++;
         
-        if (this.frameCounter >= this.frameRate) {
+        // Usar velocidad diferente según el estado
+        const velocidadActual = this.estaPersiguiendo ? this.frameRate : this.idleFrameRate;
+        
+        if (this.frameCounter >= velocidadActual) {
             this.frameCounter = 0;
             this.currentFrame++;
             
-            if (this.currentFrame >= this.framesPorFila) {
+            // En idle, solo usar los primeros 2-3 frames para respiración sutil
+            const maxFrames = this.estaPersiguiendo ? this.framesPorFila : 3;
+            
+            if (this.currentFrame >= maxFrames) {
                 this.currentFrame = 0;
             }
         }
@@ -173,7 +182,7 @@ class Oso extends Animal {
             ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.fillStyle = 'white';
             ctx.font = '12px Arial';
-            ctx.fillText(this.nombre, this.x, this.y - 5);
+            ctx.fillText(this.nombre, this.x + (this.width / 2) - 15, this.y + this.height + 15);
             return;
         }
         
@@ -190,7 +199,7 @@ class Oso extends Animal {
         
         ctx.fillStyle = 'white';
         ctx.font = '12px Arial';
-        ctx.fillText(this.nombre, this.x, this.y - 5);
+        ctx.fillText(this.nombre, this.x + (this.width / 2) - 15, this.y + this.height + 15);
         
         // // Debug
         // ctx.fillStyle = 'yellow';
@@ -210,8 +219,12 @@ class Oso extends Animal {
             this.estaPersiguiendo = true;
             this.direccion = this.calcularDireccion(dx, dy);
             
-            this.x += (dx / distancia) * this.velocidad;
-            this.y += (dy / distancia) * this.velocidad;
+            const nuevaX = this.x + (dx / distancia) * this.velocidad;
+            const nuevaY = this.y + (dy / distancia) * this.velocidad;
+            
+            // Aplicar límites del tablero
+            this.x = Math.max(0, Math.min(800 - this.width, nuevaX));
+            this.y = Math.max(0, Math.min(420 - this.height, nuevaY));
         } else {
             this.estaPersiguiendo = false;
         }
@@ -248,8 +261,12 @@ class Dinosaurio extends Animal {
         const distancia = Math.sqrt(dx * dx + dy * dy);
         
         if (distancia <= this.rangoDeteccion && distancia > 0) {
-            this.x += (dx / distancia) * this.velocidad;
-            this.y += (dy / distancia) * this.velocidad;
+            const nuevaX = this.x + (dx / distancia) * this.velocidad;
+            const nuevaY = this.y + (dy / distancia) * this.velocidad;
+            
+            // Aplicar límites del tablero
+            this.x = Math.max(0, Math.min(800 - this.width, nuevaX));
+            this.y = Math.max(0, Math.min(420 - this.height, nuevaY));
         }
     }
 }

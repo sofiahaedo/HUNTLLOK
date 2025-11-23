@@ -40,8 +40,8 @@ class Juego {
     }
 
     crearNuevoAnimal() { //crea un nuevo animal en una posicion aleatoria
-        const x = Math.random() * 640; //limita la posicion en x para que no se salga del tablero
-        const y = Math.random() * 320; //limita la posicion en y para que no se salga del tablero
+        const x = Math.random() * (800 - 80); //limita la posicion en x para que no se salga del tablero
+        const y = Math.random() * (420 - 80); //limita la posicion en y para que no se salga del tablero
         
         const tiposAnimales = [ //crea una instancia de cada animalsito con su posicion
             () => new Conejo(x, y), 

@@ -75,8 +75,8 @@ class Cazador {
     }
 
     mover(dx, dy) {
-        this.x = Math.max(0, Math.min(680, this.x + dx));
-        this.y = Math.max(0, Math.min(360, this.y + dy));
+        this.x = Math.max(0, Math.min(800 - this.width, this.x + dx));
+        this.y = Math.max(0, Math.min(420 - this.height, this.y + dy));
     }
 
     actualizar() {
