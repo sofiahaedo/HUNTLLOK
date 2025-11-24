@@ -16,6 +16,19 @@ class Cazador {
         this.teclas = {};
         this.direccionX = 0;
         this.direccionY = -1;
+        // Hitbox pequeña centrada en el cuerpo
+        this.hitboxWidth = 18;
+        this.hitboxHeight = 22;
+        this.hitboxOffsetX = 11;
+        this.hitboxOffsetY = 14;
+    }
+
+    getHitboxX() {
+        return this.x + this.hitboxOffsetX;
+    }
+
+    getHitboxY() {
+        return this.y + this.hitboxOffsetY;
     }
 
     disparar(direccionX, direccionY) {
@@ -75,8 +88,43 @@ class Cazador {
     }
 
     mover(dx, dy) {
-        this.x = Math.max(0, Math.min(800 - this.width, this.x + dx));
-        this.y = Math.max(0, Math.min(420 - this.height, this.y + dy));
+        const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + dx));
+        const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + dy));
+        
+        // Verificar colisión con animales solo en X
+        let puedeX = true;
+        juego.animales.forEach(animal => {
+            if (animal.estaVivo()) {
+                const futuraHitboxX = nuevaX + this.hitboxOffsetX;
+                const actualHitboxY = this.y + this.hitboxOffsetY;
+                
+                if (futuraHitboxX < animal.getHitboxX() + animal.hitboxWidth &&
+                    futuraHitboxX + this.hitboxWidth > animal.getHitboxX() &&
+                    actualHitboxY < animal.getHitboxY() + animal.hitboxHeight &&
+                    actualHitboxY + this.hitboxHeight > animal.getHitboxY()) {
+                    puedeX = false;
+                }
+            }
+        });
+        
+        // Verificar colisión con animales solo en Y
+        let puedeY = true;
+        juego.animales.forEach(animal => {
+            if (animal.estaVivo()) {
+                const actualHitboxX = this.x + this.hitboxOffsetX;
+                const futuraHitboxY = nuevaY + this.hitboxOffsetY;
+                
+                if (actualHitboxX < animal.getHitboxX() + animal.hitboxWidth &&
+                    actualHitboxX + this.hitboxWidth > animal.getHitboxX() &&
+                    futuraHitboxY < animal.getHitboxY() + animal.hitboxHeight &&
+                    futuraHitboxY + this.hitboxHeight > animal.getHitboxY()) {
+                    puedeY = false;
+                }
+            }
+        });
+        
+        if (puedeX) this.x = nuevaX;
+        if (puedeY) this.y = nuevaY;
     }
 
     actualizar() {
@@ -91,9 +139,9 @@ class Cazador {
     }
 
     colisionaCon(animal) {
-        return this.x < animal.x + animal.width &&
-               this.x + this.width > animal.x &&
-               this.y < animal.y + animal.height &&
-               this.y + this.height > animal.y;
+        return this.getHitboxX() < animal.getHitboxX() + animal.hitboxWidth &&
+               this.getHitboxX() + this.hitboxWidth > animal.getHitboxX() &&
+               this.getHitboxY() < animal.getHitboxY() + animal.hitboxHeight &&
+               this.getHitboxY() + this.hitboxHeight > animal.getHitboxY();
     }
 }
