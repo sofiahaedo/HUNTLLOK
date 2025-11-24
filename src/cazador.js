@@ -54,6 +54,11 @@ class Cazador {
         this.hitboxHeight = 22;
         this.hitboxOffsetX = 11;
         this.hitboxOffsetY = 14;
+        
+        // Sistema de efectos de daño
+        this.efectoDaño = false;
+        this.tiempoEfectoDaño = 0;
+        this.parpadeo = false;
     }
 
     getHitboxX() {
@@ -104,6 +109,11 @@ class Cazador {
 
     recibirDaño(daño) {
         this.vida = Math.max(0, this.vida - daño);
+        
+        // Activar efecto visual de daño
+        this.efectoDaño = true;
+        this.tiempoEfectoDaño = 30; // 0.5 segundos a 60fps
+        
         if (this.vida === 0) {
             this.morir();
         }
@@ -188,6 +198,17 @@ class Cazador {
         }
         
         this.actualizarAnimacion();
+        
+        // Actualizar efecto de daño
+        if (this.efectoDaño) {
+            this.tiempoEfectoDaño--;
+            this.parpadeo = Math.floor(this.tiempoEfectoDaño / 3) % 2 === 0;
+            
+            if (this.tiempoEfectoDaño <= 0) {
+                this.efectoDaño = false;
+                this.parpadeo = false;
+            }
+        }
     }
     
     actualizarAnimacion() {
@@ -208,7 +229,19 @@ class Cazador {
     }
 
     dibujar(ctx) {
+        // No dibujar si está parpadeando por daño
+        if (this.efectoDaño && this.parpadeo) {
+            return;
+        }
+        
         const spriteArma = this.sprites[this.armaActual];
+        
+        // Efecto de daño: tinte rojo
+        if (this.efectoDaño) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.fillStyle = 'rgba(255, 100, 100, 0.7)';
+        }
         
         // Usar sprite específico del arma si está cargado
         if (spriteArma && spriteArma.complete) {
@@ -229,6 +262,12 @@ class Cazador {
         else {
             ctx.fillStyle = '#4169E1';
             ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+        
+        // Restaurar efecto de daño
+        if (this.efectoDaño) {
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.restore();
         }
     }
 
