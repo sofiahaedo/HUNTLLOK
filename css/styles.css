@@ -138,7 +138,7 @@ body {
     text-align: center;
     z-index: 1000;
     width: 800px;
-    height: 850px;
+    max-height: 90vh;
     border: 1px solid #000000;
     overflow-y: auto;
 }
