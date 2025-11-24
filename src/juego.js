@@ -12,6 +12,7 @@ class Juego {
         this.enTabla = false;
         this.enGuardarPuntaje = false;
         this.enIngresarNombre = false;
+        this.enInstrucciones = false;
     }
 
     iniciar() {
@@ -74,6 +75,13 @@ class Juego {
             if (this.enTabla) {
                 if (e.code === 'Escape') {
                     this.resetearAlMenu();
+                }
+                return;
+            }
+            
+            if (this.enInstrucciones) {
+                if (e.code === 'Escape') {
+                    this.mostrarMenu();
                 }
                 return;
             }
@@ -259,6 +267,9 @@ class Juego {
                 this.mostrarTabla();
                 break;
             case 'Digit3':
+                this.mostrarInstrucciones();
+                break;
+            case 'Digit4':
                 window.close();
                 break;
         }
@@ -293,6 +304,7 @@ class Juego {
     this.enTabla = false;
     this.enGuardarPuntaje = false;
     this.enIngresarNombre = false;
+    this.enInstrucciones = false;
     
     // Ocultar todas las pantallas
     ['tablero', 'gameOver', 'PantallaPausa', 'pantallaPuntos', 
@@ -360,7 +372,23 @@ class Juego {
             document.getElementById('PantallaPausa').classList.add('hidden');
         }
     }
+
+
+    mostrarInstrucciones() {
+        this.enMenu = false;
+        this.enInstrucciones = true;
+        document.getElementById('pantallsMenu').classList.add('hidden');
+        document.getElementById('Instrucciones').classList.remove('hidden');
+    }
+
+    mostrarMenu() {
+        this.enMenu = true;
+        this.enInstrucciones = false;
+        document.getElementById('Instrucciones').classList.add('hidden');
+        document.getElementById('pantallsMenu').classList.remove('hidden');
+    }
 }
+
 
 const juego = new Juego();
 

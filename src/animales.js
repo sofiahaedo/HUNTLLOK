@@ -178,11 +178,11 @@ class Oso extends Animal {
         this.width = 80;  // Mucho más grande que el cazador
         this.height = 80;
         this.velocidad = 1;
-        this.rangoDeteccion = 150;
+        this.rangoDeteccion = 100;
         
         // Cargar sprite sheet
         this.spriteSheet = new Image();
-        this.spriteSheet.src = './assets/oso-idle-2.png';
+        this.spriteSheet.src = '/assets/frames-oso/oso-idle-2.png';
         this.imagenCargada = false;
         
         this.spriteSheet.onload = () => {
@@ -347,12 +347,7 @@ class Dinosaurio extends Animal {
         this.velocidad = 2;
         this.rangoDeteccion = 200;
         this.imagen = new Image();
-        this.imagen.src = './assets/dino.jpg';
-        // Hitbox centrada en el cuerpo del dino
-        this.hitboxWidth = 32;
-        this.hitboxHeight = 32;
-        this.hitboxOffsetX = 4;
-        this.hitboxOffsetY = 8;
+        this.imagen.src = './assets/dino.png'
     }
     atacar(cazador) {
         if (this.estaVivo()) {
