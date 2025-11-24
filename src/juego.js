@@ -60,7 +60,9 @@ class Juego {
             () => new Dinosaurio(x, y)
         ];
         
-        const nuevoAnimal = tiposAnimales[Math.floor(Math.random() * tiposAnimales.length)](); //elige un animal al azar de la lista
+        const indice = Math.floor(Math.random() * tiposAnimales.length);
+        const nuevoAnimal = tiposAnimales[indice](); //elige un animal al azar de la lista
+        console.log(`🎯 Creando animal tipo ${indice}: ${nuevoAnimal.nombre} en (${x}, ${y})`);
         this.animales.push(nuevoAnimal); //agrega el animal a la lista de animales del juego
     }
 
@@ -252,7 +254,23 @@ class Juego {
     }
 
     actualizarUI() {
-        document.getElementById('vida').textContent = this.cazador.vida;
+        const vida = this.cazador.vida;
+        document.getElementById('vida').textContent = vida;
+        
+        // Actualizar barra de vida
+        const barraVida = document.getElementById('barra-vida-fill');
+        const porcentajeVida = vida / 100;
+        barraVida.style.width = `${porcentajeVida * 100}%`;
+        
+        // Cambiar color según la vida
+        if (vida <= 33) {
+            barraVida.style.background = '#e74c3c'; // Rojo
+        } else if (vida <= 66) {
+            barraVida.style.background = 'linear-gradient(90deg, #e74c3c 0%, #f39c12 100%)'; // Rojo a amarillo
+        } else {
+            barraVida.style.background = 'linear-gradient(90deg, #f39c12 0%, #27ae60 100%)'; // Amarillo a verde
+        }
+        
         document.getElementById('puntos').textContent = this.cazador.puntos;
         document.getElementById('arma').textContent = this.cazador.arma.nombre;
         document.getElementById('municion').textContent = `${this.cazador.arma.municion}/${this.cazador.arma.cargadores}`;
