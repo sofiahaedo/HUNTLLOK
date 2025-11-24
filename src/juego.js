@@ -40,8 +40,17 @@ class Juego {
     }
 
     crearNuevoAnimal() { //crea un nuevo animal en una posicion aleatoria
-        const x = Math.random() * (800 - 80); //limita la posicion en x para que no se salga del tablero
-        const y = Math.random() * (420 - 80); //limita la posicion en y para que no se salga del tablero
+        let x, y, distancia;
+        const rangoMinimo = 200; // Distancia mínima del jugador
+        
+        // Buscar posición válida lejos del jugador
+        do {
+            x = Math.random() * (800 - 80);
+            y = Math.random() * (420 - 80);
+            const dx = x - this.cazador.x;
+            const dy = y - this.cazador.y;
+            distancia = Math.sqrt(dx * dx + dy * dy);
+        } while (distancia < rangoMinimo);
         
         const tiposAnimales = [ //crea una instancia de cada animalsito con su posicion
             () => new Conejo(x, y), 
@@ -141,18 +150,9 @@ class Juego {
     this.balas.forEach(bala => bala.actualizar());
     this.balas = this.balas.filter(bala => bala.activa);
     
-    // 3. Mover osos hacia el cazador
-    this.animales.forEach(animal => {       
-        if (animal instanceof Oso) {
-            animal.perseguir(this.cazador);
-        }
-    });
-
-    //4. Mover dinos hacia el cazador
+    // 3. Mover todos los animales
     this.animales.forEach(animal => {
-        if (animal instanceof Dinosaurio) {
-            animal.perseguir(this.cazador);
-        }
+        animal.perseguir(this.cazador);
     });
     
     // 5. Verificar colisiones cazador-animal

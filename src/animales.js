@@ -8,6 +8,19 @@ class Animal {
         this.vivo = true;
         this.width = 40;
         this.height = 40;
+        // Hitbox centrada y pequeña
+        this.hitboxWidth = 20;
+        this.hitboxHeight = 20;
+        this.hitboxOffsetX = 10;
+        this.hitboxOffsetY = 15;
+    }
+
+    getHitboxX() {
+        return this.x + this.hitboxOffsetX;
+    }
+
+    getHitboxY() {
+        return this.y + this.hitboxOffsetY;
     }
 
     recibirDaño(daño) {
@@ -71,7 +84,49 @@ class Animal {
         if (distancia <= this.rangoDeteccion && distancia > 0) {
             this.x += (dx / distancia) * this.velocidad;
             this.y += (dy / distancia) * this.velocidad;
+        } else {
+            // Movimiento aleatorio cuando no persigue
+            this.moverAleatoriamente();
         }
+    }
+
+    moverAleatoriamente() {
+        if (!this.direccionAleatoria || Math.random() < 0.02) {
+            this.direccionAleatoria = {
+                x: (Math.random() - 0.5) * 2,
+                y: (Math.random() - 0.5) * 2
+            };
+        }
+        
+        const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + this.direccionAleatoria.x * (this.velocidad * 0.3)));
+        const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + this.direccionAleatoria.y * (this.velocidad * 0.3)));
+        
+        // Verificar colisión con cazador en X
+        let puedeX = true;
+        const futuraHitboxX = nuevaX + this.hitboxOffsetX;
+        const actualHitboxY = this.y + this.hitboxOffsetY;
+        
+        if (futuraHitboxX < juego.cazador.getHitboxX() + juego.cazador.hitboxWidth &&
+            futuraHitboxX + this.hitboxWidth > juego.cazador.getHitboxX() &&
+            actualHitboxY < juego.cazador.getHitboxY() + juego.cazador.hitboxHeight &&
+            actualHitboxY + this.hitboxHeight > juego.cazador.getHitboxY()) {
+            puedeX = false;
+        }
+        
+        // Verificar colisión con cazador en Y
+        let puedeY = true;
+        const actualHitboxX = this.x + this.hitboxOffsetX;
+        const futuraHitboxY = nuevaY + this.hitboxOffsetY;
+        
+        if (actualHitboxX < juego.cazador.getHitboxX() + juego.cazador.hitboxWidth &&
+            actualHitboxX + this.hitboxWidth > juego.cazador.getHitboxX() &&
+            futuraHitboxY < juego.cazador.getHitboxY() + juego.cazador.hitboxHeight &&
+            futuraHitboxY + this.hitboxHeight > juego.cazador.getHitboxY()) {
+            puedeY = false;
+        }
+        
+        if (puedeX) this.x = nuevaX;
+        if (puedeY) this.y = nuevaY;
     }
 
 }
@@ -81,11 +136,18 @@ class Conejo extends Animal {
         super(x, y, 25, 10);
         this.nombre = "Conejo";
         this.color = "#8B4513";
-        
+        this.velocidad = 0.8;
+        this.rangoDeteccion = 0;
+        // Hitbox muy pequeña centrada
+        this.hitboxWidth = 18;
+        this.hitboxHeight = 18;
+        this.hitboxOffsetX = 11;
+        this.hitboxOffsetY = 16;
     }
 
     atacar(cazador) {
-        // Los conejos no atacan
+        // Los conejos colisionan pero no hacen daño
+        console.log("Conejo tocado!");
     }
 }
 
@@ -94,10 +156,18 @@ class Ciervo extends Animal {
         super(x, y, 75, 30);
         this.nombre = "Ciervo";
         this.color = "#D2691E";
+        this.velocidad = 1;
+        this.rangoDeteccion = 0;
+        // Hitbox centrada en el torso
+        this.hitboxWidth = 22;
+        this.hitboxHeight = 18;
+        this.hitboxOffsetX = 9;
+        this.hitboxOffsetY = 16;
     }
 
     atacar(cazador) {
-        // Los ciervos no atacan
+        // Los ciervos colisionan pero no hacen daño
+        console.log("Ciervo tocado!");
     }
 }
 
@@ -137,6 +207,12 @@ class Oso extends Animal {
         
         this.direccion = 2;        // Empieza mirando abajo
         this.estaPersiguiendo = false;
+        
+        // Hitbox centrada en el cuerpo visible del oso
+        this.hitboxWidth = 30;
+        this.hitboxHeight = 30;
+        this.hitboxOffsetX = 25;
+        this.hitboxOffsetY = 35;
     }
     
     actualizarAnimacion() {
@@ -219,14 +295,39 @@ class Oso extends Animal {
             this.estaPersiguiendo = true;
             this.direccion = this.calcularDireccion(dx, dy);
             
-            const nuevaX = this.x + (dx / distancia) * this.velocidad;
-            const nuevaY = this.y + (dy / distancia) * this.velocidad;
+            const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + (dx / distancia) * this.velocidad));
+            const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + (dy / distancia) * this.velocidad));
             
-            // Aplicar límites del tablero
-            this.x = Math.max(0, Math.min(800 - this.width, nuevaX));
-            this.y = Math.max(0, Math.min(420 - this.height, nuevaY));
+            // Verificar colisión con cazador en X
+            let puedeX = true;
+            const futuraHitboxX = nuevaX + this.hitboxOffsetX;
+            const actualHitboxY = this.y + this.hitboxOffsetY;
+            
+            if (futuraHitboxX < juego.cazador.getHitboxX() + juego.cazador.hitboxWidth &&
+                futuraHitboxX + this.hitboxWidth > juego.cazador.getHitboxX() &&
+                actualHitboxY < juego.cazador.getHitboxY() + juego.cazador.hitboxHeight &&
+                actualHitboxY + this.hitboxHeight > juego.cazador.getHitboxY()) {
+                puedeX = false;
+            }
+            
+            // Verificar colisión con cazador en Y
+            let puedeY = true;
+            const actualHitboxX = this.x + this.hitboxOffsetX;
+            const futuraHitboxY = nuevaY + this.hitboxOffsetY;
+            
+            if (actualHitboxX < juego.cazador.getHitboxX() + juego.cazador.hitboxWidth &&
+                actualHitboxX + this.hitboxWidth > juego.cazador.getHitboxX() &&
+                futuraHitboxY < juego.cazador.getHitboxY() + juego.cazador.hitboxHeight &&
+                futuraHitboxY + this.hitboxHeight > juego.cazador.getHitboxY()) {
+                puedeY = false;
+            }
+            
+            if (puedeX) this.x = nuevaX;
+            if (puedeY) this.y = nuevaY;
         } else {
             this.estaPersiguiendo = false;
+            // Movimiento aleatorio cuando no persigue
+            this.moverAleatoriamente();
         }
     }
 
@@ -261,12 +362,38 @@ class Dinosaurio extends Animal {
         const distancia = Math.sqrt(dx * dx + dy * dy);
         
         if (distancia <= this.rangoDeteccion && distancia > 0) {
-            const nuevaX = this.x + (dx / distancia) * this.velocidad;
-            const nuevaY = this.y + (dy / distancia) * this.velocidad;
+            const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + (dx / distancia) * this.velocidad));
+            const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + (dy / distancia) * this.velocidad));
             
-            // Aplicar límites del tablero
-            this.x = Math.max(0, Math.min(800 - this.width, nuevaX));
-            this.y = Math.max(0, Math.min(420 - this.height, nuevaY));
+            // Verificar colisión con cazador en X
+            let puedeX = true;
+            const futuraHitboxX = nuevaX + this.hitboxOffsetX;
+            const actualHitboxY = this.y + this.hitboxOffsetY;
+            
+            if (futuraHitboxX < juego.cazador.getHitboxX() + juego.cazador.hitboxWidth &&
+                futuraHitboxX + this.hitboxWidth > juego.cazador.getHitboxX() &&
+                actualHitboxY < juego.cazador.getHitboxY() + juego.cazador.hitboxHeight &&
+                actualHitboxY + this.hitboxHeight > juego.cazador.getHitboxY()) {
+                puedeX = false;
+            }
+            
+            // Verificar colisión con cazador en Y
+            let puedeY = true;
+            const actualHitboxX = this.x + this.hitboxOffsetX;
+            const futuraHitboxY = nuevaY + this.hitboxOffsetY;
+            
+            if (actualHitboxX < juego.cazador.getHitboxX() + juego.cazador.hitboxWidth &&
+                actualHitboxX + this.hitboxWidth > juego.cazador.getHitboxX() &&
+                futuraHitboxY < juego.cazador.getHitboxY() + juego.cazador.hitboxHeight &&
+                futuraHitboxY + this.hitboxHeight > juego.cazador.getHitboxY()) {
+                puedeY = false;
+            }
+            
+            if (puedeX) this.x = nuevaX;
+            if (puedeY) this.y = nuevaY;
+        } else {
+            // Movimiento aleatorio cuando no persigue
+            this.moverAleatoriamente();
         }
     }
 }

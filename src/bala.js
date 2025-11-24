@@ -39,6 +39,21 @@ class Bala {
         // Determinar dirección para sprite
         this.direccionSprite = this.calcularDireccionSprite(direccionX, direccionY);
     
+        this.imagen = new Image();
+        this.imagen.src = 'assets/bala.gif';
+        // Hitbox muy pequeña centrada
+        this.hitboxWidth = 10;
+        this.hitboxHeight = 10;
+        this.hitboxOffsetX = 5;
+        this.hitboxOffsetY = 5;
+    }
+    
+    getHitboxX() {
+        return this.x + this.hitboxOffsetX;
+    }
+
+    getHitboxY() {
+        return this.y + this.hitboxOffsetY;
     }
     
     actualizar() {
@@ -59,16 +74,16 @@ class Bala {
         });
         
         // Remover si sale del canvas
-        if (this.x < 0 || this.x > 720 || this.y < 0 || this.y > 400) {
+        if (this.x < 0 || this.x > 800 || this.y < 0 || this.y > 420) {
             this.activa = false;
         }
     }
     
     colisionaCon(animal) {
-        return this.x < animal.x + animal.width &&
-               this.x + this.width > animal.x &&
-               this.y < animal.y + animal.height &&
-               this.y + this.height > animal.y;
+        return this.getHitboxX() < animal.getHitboxX() + animal.hitboxWidth &&
+               this.getHitboxX() + this.hitboxWidth > animal.getHitboxX() &&
+               this.getHitboxY() < animal.getHitboxY() + animal.hitboxHeight &&
+               this.getHitboxY() + this.hitboxHeight > animal.getHitboxY();
     }
     
     calcularDireccionSprite(dx, dy) {
