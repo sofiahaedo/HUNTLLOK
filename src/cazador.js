@@ -59,6 +59,10 @@ class Cazador {
         this.efectoDaño = false;
         this.tiempoEfectoDaño = 0;
         this.parpadeo = false;
+        
+        // Sistema de cooldown de daño (1 segundo)
+        this.cooldownDaño = false;
+        this.tiempoCooldownDaño = 0;
     }
 
     getHitboxX() {
@@ -108,11 +112,20 @@ class Cazador {
     }
 
     recibirDaño(daño) {
+        // Si está en cooldown, no recibir daño
+        if (this.cooldownDaño) {
+            return;
+        }
+        
         this.vida = Math.max(0, this.vida - daño);
         
         // Activar efecto visual de daño
         this.efectoDaño = true;
         this.tiempoEfectoDaño = 30; // 0.5 segundos a 60fps
+        
+        // Activar cooldown de daño (1 segundo)
+        this.cooldownDaño = true;
+        this.tiempoCooldownDaño = 60; // 1 segundo a 60fps
         
         if (this.vida === 0) {
             this.morir();
@@ -137,37 +150,39 @@ class Cazador {
         const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + dx));
         const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + dy));
         
-        // Verificar colisión con animales solo en X
+        // Verificar colisión con animales solo si no está en cooldown
         let puedeX = true;
-        juego.animales.forEach(animal => {
-            if (animal.estaVivo()) {
-                const futuraHitboxX = nuevaX + this.hitboxOffsetX;
-                const actualHitboxY = this.y + this.hitboxOffsetY;
-                
-                if (futuraHitboxX < animal.getHitboxX() + animal.hitboxWidth &&
-                    futuraHitboxX + this.hitboxWidth > animal.getHitboxX() &&
-                    actualHitboxY < animal.getHitboxY() + animal.hitboxHeight &&
-                    actualHitboxY + this.hitboxHeight > animal.getHitboxY()) {
-                    puedeX = false;
-                }
-            }
-        });
-        
-        // Verificar colisión con animales solo en Y
         let puedeY = true;
-        juego.animales.forEach(animal => {
-            if (animal.estaVivo()) {
-                const actualHitboxX = this.x + this.hitboxOffsetX;
-                const futuraHitboxY = nuevaY + this.hitboxOffsetY;
-                
-                if (actualHitboxX < animal.getHitboxX() + animal.hitboxWidth &&
-                    actualHitboxX + this.hitboxWidth > animal.getHitboxX() &&
-                    futuraHitboxY < animal.getHitboxY() + animal.hitboxHeight &&
-                    futuraHitboxY + this.hitboxHeight > animal.getHitboxY()) {
-                    puedeY = false;
+        
+        if (!this.cooldownDaño) {
+            juego.animales.forEach(animal => {
+                if (animal.estaVivo()) {
+                    const futuraHitboxX = nuevaX + this.hitboxOffsetX;
+                    const actualHitboxY = this.y + this.hitboxOffsetY;
+                    
+                    if (futuraHitboxX < animal.getHitboxX() + animal.hitboxWidth &&
+                        futuraHitboxX + this.hitboxWidth > animal.getHitboxX() &&
+                        actualHitboxY < animal.getHitboxY() + animal.hitboxHeight &&
+                        actualHitboxY + this.hitboxHeight > animal.getHitboxY()) {
+                        puedeX = false;
+                    }
                 }
-            }
-        });
+            });
+            
+            juego.animales.forEach(animal => {
+                if (animal.estaVivo()) {
+                    const actualHitboxX = this.x + this.hitboxOffsetX;
+                    const futuraHitboxY = nuevaY + this.hitboxOffsetY;
+                    
+                    if (actualHitboxX < animal.getHitboxX() + animal.hitboxWidth &&
+                        actualHitboxX + this.hitboxWidth > animal.getHitboxX() &&
+                        futuraHitboxY < animal.getHitboxY() + animal.hitboxHeight &&
+                        futuraHitboxY + this.hitboxHeight > animal.getHitboxY()) {
+                        puedeY = false;
+                    }
+                }
+            });
+        }
         
         if (puedeX) this.x = nuevaX;
         if (puedeY) this.y = nuevaY;
@@ -207,6 +222,14 @@ class Cazador {
             if (this.tiempoEfectoDaño <= 0) {
                 this.efectoDaño = false;
                 this.parpadeo = false;
+            }
+        }
+        
+        // Actualizar cooldown de daño
+        if (this.cooldownDaño) {
+            this.tiempoCooldownDaño--;
+            if (this.tiempoCooldownDaño <= 0) {
+                this.cooldownDaño = false;
             }
         }
     }
