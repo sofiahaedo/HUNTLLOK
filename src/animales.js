@@ -108,11 +108,11 @@ class Oso extends Animal {
         this.width = 80;  // Mucho más grande que el cazador
         this.height = 80;
         this.velocidad = 1;
-        this.rangoDeteccion = 150;
+        this.rangoDeteccion = 100;
         
         // Cargar sprite sheet
         this.spriteSheet = new Image();
-        this.spriteSheet.src = './assets/oso-idle-2.png';
+        this.spriteSheet.src = '/assets/frames-oso/oso-idle-2.png';
         this.imagenCargada = false;
         
         this.spriteSheet.onload = () => {

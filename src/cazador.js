@@ -11,11 +11,44 @@ class Cazador {
         this.width = 40;
         this.height = 40;
         this.velocidad = 3;
+        
+        // Sprites para cada arma
+        this.sprites = {
+            pistola: new Image(),
+            rifle: new Image(),
+            escopeta: new Image()
+        };
+        
+        // Configurar carga de sprites con logs
+        this.sprites.pistola.src = 'assets/frames-cazador/CAZADOR PISTOLAA.png';
+        this.sprites.rifle.src = 'assets/frames-cazador/CAZADOR RIFLEE.png';
+        this.sprites.escopeta.src = 'assets/frames-cazador/CAZADOR ESCOPETAA.png';
+        
+        // Configuración de animación
+        this.frameWidth = 64;  // Ajusta según tu spritesheet
+        this.frameHeight = 64; // Ajusta según tu spritesheet
+        this.framesPorFila = 4; // Ajusta según tu spritesheet
+        this.currentFrame = 0;
+        this.frameCounter = 0;
+        this.frameRate = 8;
+        this.direccion = 1; // 0=arriba, 1=abajo, 2=derecha, 3=izquierda
+        this.estaMoviendo = false;
+        
+        // Logs de debug
+        this.sprites.pistola.onload = () => console.log('✅ Sprite pistola cargado');
+        this.sprites.rifle.onload = () => console.log('✅ Sprite rifle cargado');
+        this.sprites.escopeta.onload = () => console.log('✅ Sprite escopeta cargado');
+        
+        // Fallback original
         this.imagen = new Image();
         this.imagen.src = 'assets/cazador.png';
+        
+        this.armaActual = 'pistola';
         this.teclas = {};
         this.direccionX = 0;
         this.direccionY = -1;
+        
+        console.log('🎯 Cazador creado, intentando cargar sprites...');
     }
 
     disparar(direccionX, direccionY) {
@@ -42,12 +75,15 @@ class Cazador {
         switch(tipoArma) {
             case 1:
                 this.arma = this.pistola;
+                this.armaActual = 'pistola';
                 break;
             case 2:
                 this.arma = this.rifle;
+                this.armaActual = 'rifle';
                 break;
             case 3:
                 this.arma = this.escopeta;
+                this.armaActual = 'escopeta';
                 break;
         }
         juego.actualizarUI();
@@ -80,14 +116,72 @@ class Cazador {
     }
 
     actualizar() {
-        if (this.teclas['KeyW']) this.mover(0, -this.velocidad);
-        if (this.teclas['KeyS']) this.mover(0, this.velocidad);
-        if (this.teclas['KeyA']) this.mover(-this.velocidad, 0);
-        if (this.teclas['KeyD']) this.mover(this.velocidad, 0);
+        this.estaMoviendo = false;
+        
+        if (this.teclas['KeyW']) {
+            this.mover(0, -this.velocidad);
+            this.direccion = 1; // Arriba
+            this.estaMoviendo = true;
+        }
+        if (this.teclas['KeyS']) {
+            this.mover(0, this.velocidad);
+            this.direccion = 0; // Abajo
+            this.estaMoviendo = true;
+        }
+        if (this.teclas['KeyA']) {
+            this.mover(-this.velocidad, 0);
+            this.direccion = 2; // Izquierda
+            this.estaMoviendo = true;
+        }
+        if (this.teclas['KeyD']) {
+            this.mover(this.velocidad, 0);
+            this.direccion = 3; // Derecha
+            this.estaMoviendo = true;
+        }
+        
+        this.actualizarAnimacion();
+    }
+    
+    actualizarAnimacion() {
+        this.frameCounter++;
+        
+        if (this.frameCounter >= this.frameRate) {
+            this.frameCounter = 0;
+            
+            if (this.estaMoviendo) {
+                this.currentFrame++;
+                if (this.currentFrame >= this.framesPorFila) {
+                    this.currentFrame = 0;
+                }
+            } else {
+                this.currentFrame = 0; // Frame idle
+            }
+        }
     }
 
     dibujar(ctx) {
-        ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height);
+        const spriteArma = this.sprites[this.armaActual];
+        
+        // Usar sprite específico del arma si está cargado
+        if (spriteArma && spriteArma.complete) {
+            const frameX = this.currentFrame * this.frameWidth;
+            const frameY = this.direccion * this.frameHeight;
+            
+            ctx.drawImage(
+                spriteArma,
+                frameX, frameY, this.frameWidth, this.frameHeight,
+                this.x, this.y, this.width, this.height
+            );
+        }
+        // Fallback: sprite original
+        else if (this.imagen && this.imagen.complete) {
+            ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height);
+        }
+        // Último fallback: rectángulo
+        else {
+            ctx.fillStyle = '#4169E1';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
 
     colisionaCon(animal) {
