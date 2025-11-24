@@ -625,7 +625,7 @@ class Oso extends Animal {
         if (this.estaVivo() && this.cooldownAtaque <= 0) {
             cazador.recibirDaño(20);
             this.cooldownAtaque = this.tiempoEntreAtaques;
-            console.log("🐻 Oso ataca! Cooldown activado");
+            console.log("🐻 Oso ataca! -20 vida");
         }
     }
 }
@@ -647,9 +647,9 @@ class Dinosaurio extends Animal {
     }
     atacar(cazador) {
         if (this.estaVivo() && this.cooldownAtaque <= 0) {
-            cazador.recibirDaño(50); // 2 ataques para matar (100/50 = 2)
+            cazador.recibirDaño(50);
             this.cooldownAtaque = this.tiempoEntreAtaques;
-            console.log(" Dinosaurio ataca! -50 vida");
+            console.log("🦕 Dinosaurio ataca! -50 vida");
         }
     }
         
