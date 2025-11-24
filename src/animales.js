@@ -246,7 +246,7 @@ class Dinosaurio extends Animal {
         this.velocidad = 2;
         this.rangoDeteccion = 200;
         this.imagen = new Image();
-        this.imagen.src = './assets/dino.jpg'
+        this.imagen.src = './assets/dino.png'
     }
     atacar(cazador) {
         if (this.estaVivo()) {
