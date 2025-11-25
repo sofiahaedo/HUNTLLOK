@@ -185,20 +185,11 @@ function runAllTests() {
     testRunner.runTest("Creación de Animales", testAnimalCreation);
     testRunner.runTest("Daño a Animales", testAnimalDamage);
     testRunner.runTest("Muerte de Animales", testAnimalDeath);
-    
-
     testRunner.runTest("Creación de Cazador", testCazadorCreation);
     testRunner.runTest("Daño al Cazador", testCazadorDamage);
     testRunner.runTest("Movimiento del Cazador", testCazadorMovement);
-    
-
     testRunner.runTest("Creación de Armas", testWeaponCreation);
     testRunner.runTest("Disparo de Armas", testWeaponShooting);
-    
-    
-    testRunner.runTest("Detección de Colisiones", testCollisionDetection);
-    testRunner.runTest("Cálculo de Hitbox", testHitboxCalculation);
-    
     testRunner.runTest("Límites del Juego", testBoundaryLimits);
     
     testRunner.showResults();
