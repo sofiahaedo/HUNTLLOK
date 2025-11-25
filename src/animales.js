@@ -495,12 +495,12 @@ class Oso extends Animal {
         
         this.spriteSheet.onload = () => {
             this.imagenCargada = true;
-            console.log("✅ Sprite del oso cargado!");
+            console.log(" Sprite del oso cargado!");
             console.log("   Tamaño:", this.spriteSheet.width, "x", this.spriteSheet.height);
         };
         
         this.spriteSheet.onerror = () => {
-            console.error("❌ Error al cargar sprite del oso");
+            console.error(" Error al cargar sprite del oso");
         };
         
         // CONFIGURACIÓN PARA TU SPRITE
@@ -508,8 +508,8 @@ class Oso extends Animal {
         this.frameHeight = 64;     //64px
         this.framesPorFila = 8;    //8 frames
         
-        this.currentFrame = 0;
-        this.frameCounter = 0;
+        this.currentFrame = 0; //frame actual
+        this.frameCounter = 0; //contador para controlar la velocidad de animacion
         this.frameRate = 10;       // Velocidad normal
         this.idleFrameRate = 30;   // Velocidad idle (más lento)
         

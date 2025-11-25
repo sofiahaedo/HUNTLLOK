@@ -62,7 +62,7 @@ class Juego {
         
         const indice = Math.floor(Math.random() * tiposAnimales.length);
         const nuevoAnimal = tiposAnimales[indice](); //elige un animal al azar de la lista
-        console.log(`🎯 Creando animal tipo ${indice}: ${nuevoAnimal.nombre} en (${x}, ${y})`);
+        console.log(`Creando animal tipo ${indice}: ${nuevoAnimal.nombre} en (${x}, ${y})`);
         this.animales.push(nuevoAnimal); //agrega el animal a la lista de animales del juego
     }
 
