@@ -35,9 +35,9 @@ class Cazador {
         this.estaMoviendo = false;
         
         // Logs de debug
-        this.sprites.pistola.onload = () => console.log('✅ Sprite pistola cargado');
-        this.sprites.rifle.onload = () => console.log('✅ Sprite rifle cargado');
-        this.sprites.escopeta.onload = () => console.log('✅ Sprite escopeta cargado');
+        this.sprites.pistola.onload = () => console.log('Sprite pistola cargado');
+        this.sprites.rifle.onload = () => console.log('Sprite rifle cargado');
+        this.sprites.escopeta.onload = () => console.log('Sprite escopeta cargado');
         
         // Fallback original
         this.imagen = new Image();
@@ -48,7 +48,7 @@ class Cazador {
         this.direccionX = 0;
         this.direccionY = -1;
         
-        console.log('🎯 Cazador creado, intentando cargar sprites...');
+        console.log('Cazador creado, intentando cargar sprites...');
         // Hitbox pequeña centrada en el cuerpo
         this.hitboxWidth = 18;
         this.hitboxHeight = 22;

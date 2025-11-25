@@ -20,11 +20,11 @@ class Bala {
         
         this.spriteSheet.onload = () => {
             this.imagenCargada = true;
-            console.log("✅ Sprite de bala cargado!");
+            console.log("Sprite de bala cargado!");
         };
         
         this.spriteSheet.onerror = () => {
-            console.error("❌ Error al cargar sprite de bala");
+            console.error("Error al cargar sprite de bala");
         };
         
         // CONFIGURACIÓN PARA SPRITE DE BALA
