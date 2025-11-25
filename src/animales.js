@@ -1,5 +1,5 @@
 class Animal {
-    constructor(x, y, vida, puntosPorMatar, imagen) {
+    constructor(x, y, puntosPorMatar, imagen, velocidad) {
         this.x = x;
         this.y = y;
         this.vida = vida;
@@ -13,6 +13,7 @@ class Animal {
         this.hitboxHeight = 20;
         this.hitboxOffsetX = 10;
         this.hitboxOffsetY = 15;
+        this.velocidad = velocidad;
     }
 
     getHitboxX() {
@@ -56,7 +57,7 @@ class Animal {
     }
     
 
-    distanciaA(objeto) {
+    distanciaA(objeto) { //Calcula Distancia entre 2 puntos
         const dx = this.x - objeto.x;
         const dy = this.y - objeto.y;
         return Math.sqrt(dx * dx + dy * dy);
