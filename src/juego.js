@@ -35,7 +35,7 @@ class Juego {
     }
 
     crearAnimalesIniciales() { //crea 4 animales al iniciar el juego, uno de cada tipo
-        for (let i = 0; i < 4; i++) { //indica que se creen 4 animales
+        for (let i = 0; i < 4; i++) { //indica que se creen 4 animales con un for normal
             this.crearNuevoAnimal();//llama a la funcion que crea un nuevo animal
         }
     }
@@ -50,8 +50,8 @@ class Juego {
             y = Math.random() * (420 - 80);
             const dx = x - this.cazador.x;
             const dy = y - this.cazador.y;
-            distancia = Math.sqrt(dx * dx + dy * dy);
-        } while (distancia < rangoMinimo);
+            distancia = Math.sqrt(dx * dx + dy * dy); // Calcula la distancia al jugador
+        } while (distancia < rangoMinimo); //Se aegura que el animal no aparezca encima del jugador
         
         const tiposAnimales = [ //crea una instancia de cada animalsito con su posicion
             () => new Conejo(x, y), 
