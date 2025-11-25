@@ -16,17 +16,17 @@ class Juego {
     }
 
     iniciar() {
-        this.canvas = document.getElementById('gameCanvas'); //crea el tablerito inicial
+        this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         
-        this.crearAnimalesIniciales(); //crrea los animales iniciales del juego
-        this.actualizarUI(); //actualiza la interfaz cada vez que se preciona una letra
-        this.juegoActivo = true; //indica que el juego esta activo
+        this.crearAnimalesIniciales();
+        this.actualizarUI();
+        this.juegoActivo = true;
         
-        this.loop(); //inicia el loop del juego
+        this.loop();
     }
 
-    loop() { //funcion principal del juego, se repite constantemente, actualizando y dibujando
+    loop() {
         if (this.juegoActivo) {
             this.actualizar();
             this.dibujar();
@@ -34,17 +34,16 @@ class Juego {
         }
     }
 
-    crearAnimalesIniciales() { //crea 4 animales al iniciar el juego, uno de cada tipo
-        for (let i = 0; i < 4; i++) { //indica que se creen 4 animales con un for normal
-            this.crearNuevoAnimal();//llama a la funcion que crea un nuevo animal
+    crearAnimalesIniciales() {
+        for (let i = 0; i < 4; i++) {
+            this.crearNuevoAnimal();
         }
     }
 
-    crearNuevoAnimal() { //crea un nuevo animal en una posicion aleatoria
+    crearNuevoAnimal() {
         let x, y, distancia;
-        const rangoMinimo = 200; // Distancia mínima del jugador
+        const rangoMinimo = 200;
         
-        // Buscar posición válida lejos del jugador
         do {
             x = Math.random() * (800 - 80);
             y = Math.random() * (420 - 80);
@@ -53,7 +52,7 @@ class Juego {
             distancia = Math.sqrt(dx * dx + dy * dy); // Calcula la distancia al jugador
         } while (distancia < rangoMinimo); //Se aegura que el animal no aparezca encima del jugador
         
-        const tiposAnimales = [ //crea una instancia de cada animalsito con su posicion
+        const tiposAnimales = [
             () => new Conejo(x, y), 
             () => new Ciervo(x, y),
             () => new Oso(x, y),
@@ -61,14 +60,12 @@ class Juego {
         ];
         
         const indice = Math.floor(Math.random() * tiposAnimales.length);
-        const nuevoAnimal = tiposAnimales[indice](); //elige un animal al azar de la lista
-        console.log(`Creando animal tipo ${indice}: ${nuevoAnimal.nombre} en (${x}, ${y})`);
-        this.animales.push(nuevoAnimal); //agrega el animal a la lista de animales del juego
+        const nuevoAnimal = tiposAnimales[indice]();
+        this.animales.push(nuevoAnimal);
     }
 
-    configurarTeclas() { //configura las teclas para controlar el juego
-        document.addEventListener('keydown', (e) => { //detecta cuando se presiona una tecla
-            console.log(`Tecla presionada: ${e.code}`);//muestra en consola la tecla presionada
+    configurarTeclas() {
+        document.addEventListener('keydown', (e) => {
             if (this.enMenu) {
                 this.manejarTeclasMenu(e);
                 return;
@@ -153,53 +150,47 @@ class Juego {
    actualizar() {
     if (!this.juegoActivo || this.pausado) return;
     
-    // 1. Actualizar movimiento del cazador
+
     this.cazador.actualizar();
     
-    // 2. Actualizar balas
+    
     this.balas.forEach(bala => bala.actualizar());
     this.balas = this.balas.filter(bala => bala.activa);
     
-    // 3. Mover todos los animales
+
     this.animales.forEach(animal => {
         animal.perseguir(this.cazador);
     });
     
-    // 5. Verificar colisiones cazador-animal
+
     this.animales.forEach(animal => {
         if (animal.estaVivo() && this.cazador.colisionaCon(animal)) {
             animal.atacar(this.cazador);
         }
     });
     
-    // 6. NUEVO: Procesar animales muertos ANTES de removerlos
     this.animales.forEach(animal => {
         if (!animal.estaVivo()) {
-            // Dar puntos al cazador
             this.cazador.ganarPuntos(animal.puntosPorMatar);
-            // Crear un nuevo animal
             this.crearNuevoAnimal();
         }
     });
     
-    // 7. Remover animales muertos
     this.animales = this.animales.filter(animal => animal.estaVivo());
     }
 
     dibujar() {
-        // Limpiar base
+    
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Dibujar cazador
+        
         this.cazador.dibujar(this.ctx);
         
-        // Dibujar animales
         this.animales.forEach(animal => {
             animal.dibujar(this.ctx);
-            console.log(animal.nombre);
         });
         
-        // Dibujar balas
+        
         this.balas.forEach(bala => {
             bala.dibujar(this.ctx);
         });
@@ -229,7 +220,7 @@ class Juego {
             cancelAnimationFrame(this.gameLoop);
         }
         
-        // Mostrar pantalla de guardar puntaje
+    
         this.enGuardarPuntaje = true;
         document.getElementById('finalScore').textContent = this.cazador.puntos;
         document.getElementById('salvarPuntos').classList.remove('hidden');
@@ -257,18 +248,18 @@ class Juego {
         const vida = this.cazador.vida;
         document.getElementById('vida').textContent = vida;
         
-        // Actualizar barra de vida
+        
         const barraVida = document.getElementById('barra-vida-fill');
         const porcentajeVida = vida / 100;
         barraVida.style.width = `${porcentajeVida * 100}%`;
         
-        // Cambiar color según la vida
+        
         if (vida <= 33) {
-            barraVida.style.background = '#e74c3c'; // Rojo
+            barraVida.style.background = '#e74c3c';
         } else if (vida <= 66) {
-            barraVida.style.background = 'linear-gradient(90deg, #e74c3c 0%, #f39c12 100%)'; // Rojo a amarillo
+            barraVida.style.background = 'linear-gradient(90deg, #e74c3c 0%, #f39c12 100%)';
         } else {
-            barraVida.style.background = 'linear-gradient(90deg, #f39c12 0%, #27ae60 100%)'; // Amarillo a verde
+            barraVida.style.background = 'linear-gradient(90deg, #f39c12 0%, #27ae60 100%)';
         }
         
         document.getElementById('puntos').textContent = this.cazador.puntos;
@@ -324,13 +315,13 @@ class Juego {
     this.enIngresarNombre = false;
     this.enInstrucciones = false;
     
-    // Ocultar todas las pantallas
+
     ['tablero', 'gameOver', 'PantallaPausa', 'pantallaPuntos', 
      'salvarPuntos', 'pantallaNombre'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
     });
     
-    // Mostrar menú
+
     document.getElementById('pantallsMenu').classList.remove('hidden');
     document.getElementById('playerName').value = '';
     }
