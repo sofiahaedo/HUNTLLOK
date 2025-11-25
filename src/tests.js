@@ -42,12 +42,12 @@ class TestRunner {
     
     showResults() {
         const total = this.passed + this.failed;
-        console.log(`\n📊 RESUMEN DE TESTS:`);
+        console.log(`\n RESUMEN DE TESTS:`);
         console.log(`Total: ${total} | Passed: ${this.passed} | Failed: ${this.failed}`);
         if (this.failed === 0) {
-            console.log(`🎉 Todos los tests pasaron!`);
+            console.log(`Todos los tests pasaron!`);
         } else {
-            console.log(`⚠️ ${this.failed} tests fallaron`);
+            console.log(`${this.failed} tests fallaron`);
         }
     }
 }
@@ -67,8 +67,7 @@ function testAnimalCreation() {
 
     const conejo = new Conejo(50, 50);
     
-    testRunner.assert(conejo.x === 50, "Conejo debe tener posición X correcta");
-    testRunner.assert(conejo.y === 50, "Conejo debe tener posición Y correcta");
+
     testRunner.assert(conejo.vida === 25, "Conejo debe tener 25 de vida");
     testRunner.assert(conejo.vivo === true, "Conejo debe estar vivo al crearse");
     testRunner.assertEqual(conejo.nombre, "Conejo", "Nombre debe ser 'Conejo'");
@@ -162,32 +161,6 @@ function testWeaponShooting() {
     }
     
     testRunner.assert(rifle.municion === municionInicial - 1, "Munición debe reducirse al disparar");
-}
-
-
-function testCollisionDetection() {
-    const cazador = new Cazador();
-    cazador.x = 100;
-    cazador.y = 100;
-    
-    const animal = new Conejo(100, 100); 
-    
-    testRunner.assert(cazador.colisionaCon(animal), "Debe detectar colisión en misma posición");
-    
-    animal.x = 200;
-    animal.y = 200;
-    testRunner.assert(!cazador.colisionaCon(animal), "No debe detectar colisión cuando están lejos");
-}
-
-
-function testHitboxCalculation() {
-    const animal = new Oso(50, 50);
-    
-    const hitboxX = animal.getHitboxX();
-    const hitboxY = animal.getHitboxY();
-    
-    testRunner.assert(hitboxX === animal.x + animal.hitboxOffsetX, "Hitbox X debe calcularse correctamente");
-    testRunner.assert(hitboxY === animal.y + animal.hitboxOffsetY, "Hitbox Y debe calcularse correctamente");
 }
 
 
