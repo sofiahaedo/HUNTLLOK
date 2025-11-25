@@ -33,9 +33,6 @@ class TablaPuntajes {
         return this.mejoresPuntajes.slice(0, 5);
     }
 
-    mejorPuntaje() {
-        return this.mejoresPuntajes.length > 0 ? this.mejoresPuntajes[0].puntaje : 0;
-    }
 }
 
 const tablaPuntajes = new TablaPuntajes();

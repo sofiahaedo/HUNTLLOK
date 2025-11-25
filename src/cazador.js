@@ -12,34 +12,25 @@ class Cazador {
         this.height = 40;
         this.velocidad = 3;
         
-        // Sprites para cada arma
         this.sprites = {
             pistola: new Image(),
             rifle: new Image(),
             escopeta: new Image()
         };
         
-        // Configurar carga de sprites con logs
         this.sprites.pistola.src = 'assets/frames-cazador/CAZADOR PISTOLAA.png';
         this.sprites.rifle.src = 'assets/frames-cazador/CAZADOR RIFLEE.png';
         this.sprites.escopeta.src = 'assets/frames-cazador/CAZADOR ESCOPETAA.png';
         
-        // Configuración de animación
-        this.frameWidth = 64;  // Ajusta según tu spritesheet
-        this.frameHeight = 64; // Ajusta según tu spritesheet
-        this.framesPorFila = 4; // Ajusta según tu spritesheet
+        this.frameWidth = 64;
+        this.frameHeight = 64;
+        this.framesPorFila = 4;
         this.currentFrame = 0;
         this.frameCounter = 0;
         this.frameRate = 8;
-        this.direccion = 1; // 0=arriba, 1=abajo, 2=derecha, 3=izquierda
+        this.direccion = 1;
         this.estaMoviendo = false;
         
-        // Logs de debug
-        this.sprites.pistola.onload = () => console.log('✅ Sprite pistola cargado');
-        this.sprites.rifle.onload = () => console.log('✅ Sprite rifle cargado');
-        this.sprites.escopeta.onload = () => console.log('✅ Sprite escopeta cargado');
-        
-        // Fallback original
         this.imagen = new Image();
         this.imagen.src = 'assets/cazador.png';
         
@@ -47,20 +38,16 @@ class Cazador {
         this.teclas = {};
         this.direccionX = 0;
         this.direccionY = -1;
-        
-        console.log('🎯 Cazador creado, intentando cargar sprites...');
-        // Hitbox pequeña centrada en el cuerpo
+
         this.hitboxWidth = 18;
         this.hitboxHeight = 22;
         this.hitboxOffsetX = 11;
         this.hitboxOffsetY = 14;
         
-        // Sistema de efectos de daño
         this.efectoDaño = false;
         this.tiempoEfectoDaño = 0;
         this.parpadeo = false;
         
-        // Sistema de cooldown de daño (1 segundo)
         this.cooldownDaño = false;
         this.tiempoCooldownDaño = 0;
     }
@@ -79,17 +66,12 @@ class Cazador {
             const bala = new Bala(this.x + this.width/2, this.y + this.height/2, direccionX, direccionY, this.arma.daño);
             juego.balas.push(bala);
             juego.actualizarUI();
-        } else {
-            console.log("Sin munición!");
         }
     }
 
     recargar() {
         if (this.arma.recargar()) {
             juego.actualizarUI();
-            console.log("Recargando...");
-        } else {
-            console.log("Sin cargadores!");
         }
     }
 
@@ -112,20 +94,17 @@ class Cazador {
     }
 
     recibirDaño(daño) {
-        // Si está en cooldown, no recibir daño
         if (this.cooldownDaño) {
             return;
         }
         
         this.vida = Math.max(0, this.vida - daño);
         
-        // Activar efecto visual de daño
         this.efectoDaño = true;
-        this.tiempoEfectoDaño = 30; // 0.5 segundos a 60fps
+        this.tiempoEfectoDaño = 30;
         
-        // Activar cooldown de daño (1 segundo)
         this.cooldownDaño = true;
-        this.tiempoCooldownDaño = 60; // 1 segundo a 60fps
+        this.tiempoCooldownDaño = 60;
         
         if (this.vida === 0) {
             this.morir();
@@ -150,7 +129,6 @@ class Cazador {
         const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + dx));
         const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + dy));
         
-        // Verificar colisión con animales solo si no está en cooldown
         let puedeX = true;
         let puedeY = true;
         
@@ -193,28 +171,27 @@ class Cazador {
         
         if (this.teclas['KeyW']) {
             this.mover(0, -this.velocidad);
-            this.direccion = 1; // Arriba
+            this.direccion = 1;
             this.estaMoviendo = true;
         }
         if (this.teclas['KeyS']) {
             this.mover(0, this.velocidad);
-            this.direccion = 0; // Abajo
+            this.direccion = 0;
             this.estaMoviendo = true;
         }
         if (this.teclas['KeyA']) {
             this.mover(-this.velocidad, 0);
-            this.direccion = 2; // Izquierda
+            this.direccion = 2;
             this.estaMoviendo = true;
         }
         if (this.teclas['KeyD']) {
             this.mover(this.velocidad, 0);
-            this.direccion = 3; // Derecha
+            this.direccion = 3;
             this.estaMoviendo = true;
         }
         
         this.actualizarAnimacion();
         
-        // Actualizar efecto de daño
         if (this.efectoDaño) {
             this.tiempoEfectoDaño--;
             this.parpadeo = Math.floor(this.tiempoEfectoDaño / 3) % 2 === 0;
@@ -225,7 +202,6 @@ class Cazador {
             }
         }
         
-        // Actualizar cooldown de daño
         if (this.cooldownDaño) {
             this.tiempoCooldownDaño--;
             if (this.tiempoCooldownDaño <= 0) {
@@ -246,27 +222,24 @@ class Cazador {
                     this.currentFrame = 0;
                 }
             } else {
-                this.currentFrame = 0; // Frame idle
+                this.currentFrame = 0;
             }
         }
     }
 
     dibujar(ctx) {
-        // No dibujar si está parpadeando por daño
         if (this.efectoDaño && this.parpadeo) {
             return;
         }
         
         const spriteArma = this.sprites[this.armaActual];
         
-        // Efecto de daño: tinte rojo
         if (this.efectoDaño) {
             ctx.save();
             ctx.globalCompositeOperation = 'multiply';
             ctx.fillStyle = 'rgba(255, 100, 100, 0.7)';
         }
         
-        // Usar sprite específico del arma si está cargado
         if (spriteArma && spriteArma.complete) {
             const frameX = this.currentFrame * this.frameWidth;
             const frameY = this.direccion * this.frameHeight;
@@ -277,17 +250,14 @@ class Cazador {
                 this.x, this.y, this.width, this.height
             );
         }
-        // Fallback: sprite original
         else if (this.imagen && this.imagen.complete) {
             ctx.drawImage(this.imagen, this.x, this.y, this.width, this.height);
         }
-        // Último fallback: rectángulo
         else {
             ctx.fillStyle = '#4169E1';
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
         
-        // Restaurar efecto de daño
         if (this.efectoDaño) {
             ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.restore();

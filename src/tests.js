@@ -1,6 +1,3 @@
-// Módulo de Tests para HUNTLLOK
-// Sistema de asserts para verificar errores en el código
-
 class TestRunner {
     constructor() {
         this.tests = [];
@@ -8,41 +5,41 @@ class TestRunner {
         this.failed = 0;
     }
 
-    // Assert básico
+    
     assert(condition, message) {
         if (!condition) {
             throw new Error(`ASSERT FAILED: ${message}`);
         }
     }
 
-    // Assert de igualdad
+
     assertEqual(actual, expected, message) {
         if (actual !== expected) {
             throw new Error(`ASSERT EQUAL FAILED: ${message}. Expected: ${expected}, Got: ${actual}`);
         }
     }
 
-    // Assert de no nulo
+    
     assertNotNull(value, message) {
         if (value === null || value === undefined) {
             throw new Error(`ASSERT NOT NULL FAILED: ${message}`);
         }
     }
 
-    // Ejecutar un test
+    
     runTest(testName, testFunction) {
         try {
-            console.log(`🧪 Ejecutando test: ${testName}`);
+            console.log(` Ejecutando test: ${testName}`);
             testFunction();
-            console.log(`✅ PASSED: ${testName}`);
+            console.log(` PASSED: ${testName}`);
             this.passed++;
         } catch (error) {
-            console.error(`❌ FAILED: ${testName} - ${error.message}`);
+            console.error(` FAILED: ${testName} - ${error.message}`);
             this.failed++;
         }
     }
 
-    // Mostrar resumen
+    
     showResults() {
         const total = this.passed + this.failed;
         console.log(`\n📊 RESUMEN DE TESTS:`);
@@ -55,12 +52,12 @@ class TestRunner {
     }
 }
 
-// Instancia global del test runner
+
 const testRunner = new TestRunner();
 
-// TESTS DE ANIMALES
+
 function testAnimalCreation() {
-    // Mock del juego para evitar errores
+
     const mockJuego = {
         cazador: { ganarPuntos: () => {}, x: 100, y: 100 },
         removerAnimal: () => {},
@@ -102,13 +99,13 @@ function testAnimalDeath() {
     window.juego = mockJuego;
 
     const oso = new Oso(200, 200);
-    oso.recibirDaño(200); // Daño suficiente para matar
+    oso.recibirDaño(200); 
     
     testRunner.assert(oso.vida === 0, "Vida debe ser 0 después de daño mortal");
     testRunner.assert(oso.vivo === false, "Animal debe estar muerto");
 }
 
-// TESTS DE CAZADOR
+
 function testCazadorCreation() {
     const cazador = new Cazador();
     
@@ -126,7 +123,7 @@ function testCazadorDamage() {
     testRunner.assert(cazador.vida === vidaInicial - 30, "Daño debe reducir vida del cazador");
     testRunner.assert(cazador.cooldownDaño === true, "Cooldown debe activarse después del daño");
     
-    // Test de cooldown - no debe recibir más daño
+    
     cazador.recibirDaño(20);
     testRunner.assert(cazador.vida === vidaInicial - 30, "No debe recibir daño durante cooldown");
 }
@@ -144,7 +141,7 @@ function testCazadorMovement() {
     testRunner.assert(cazador.y === yInicial + 15, "Movimiento en Y debe funcionar");
 }
 
-// TESTS DE ARMAS
+
 function testWeaponCreation() {
     const pistola = new Pistola();
     
@@ -159,7 +156,7 @@ function testWeaponShooting() {
     
     testRunner.assert(rifle.tieneMunicion(), "Rifle debe tener munición inicialmente");
     
-    // Simular disparo
+    
     if (rifle.tieneMunicion()) {
         rifle.municion--;
     }
@@ -167,13 +164,13 @@ function testWeaponShooting() {
     testRunner.assert(rifle.municion === municionInicial - 1, "Munición debe reducirse al disparar");
 }
 
-// TESTS DE COLISIONES
+
 function testCollisionDetection() {
     const cazador = new Cazador();
     cazador.x = 100;
     cazador.y = 100;
     
-    const animal = new Conejo(100, 100); // Misma posición
+    const animal = new Conejo(100, 100); 
     
     testRunner.assert(cazador.colisionaCon(animal), "Debe detectar colisión en misma posición");
     
@@ -182,7 +179,7 @@ function testCollisionDetection() {
     testRunner.assert(!cazador.colisionaCon(animal), "No debe detectar colisión cuando están lejos");
 }
 
-// TESTS DE HITBOX
+
 function testHitboxCalculation() {
     const animal = new Oso(50, 50);
     
@@ -193,51 +190,47 @@ function testHitboxCalculation() {
     testRunner.assert(hitboxY === animal.y + animal.hitboxOffsetY, "Hitbox Y debe calcularse correctamente");
 }
 
-// TESTS DE LÍMITES DEL JUEGO
+
 function testBoundaryLimits() {
     const cazador = new Cazador();
     
-    // Test límite izquierdo
+    
     cazador.x = 0;
     cazador.mover(-10, 0);
     testRunner.assert(cazador.x >= 0, "Cazador no debe salir por el límite izquierdo");
     
-    // Test límite superior
+    
     cazador.y = 0;
     cazador.mover(0, -10);
     testRunner.assert(cazador.y >= 0, "Cazador no debe salir por el límite superior");
 }
 
-// FUNCIÓN PRINCIPAL PARA EJECUTAR TODOS LOS TESTS
+
 function runAllTests() {
-    console.log("🚀 Iniciando tests de HUNTLLOK...\n");
     
-    // Tests de Animales
+
     testRunner.runTest("Creación de Animales", testAnimalCreation);
     testRunner.runTest("Daño a Animales", testAnimalDamage);
     testRunner.runTest("Muerte de Animales", testAnimalDeath);
     
-    // Tests de Cazador
+
     testRunner.runTest("Creación de Cazador", testCazadorCreation);
     testRunner.runTest("Daño al Cazador", testCazadorDamage);
     testRunner.runTest("Movimiento del Cazador", testCazadorMovement);
     
-    // Tests de Armas
+
     testRunner.runTest("Creación de Armas", testWeaponCreation);
     testRunner.runTest("Disparo de Armas", testWeaponShooting);
     
-    // Tests de Colisiones
+    
     testRunner.runTest("Detección de Colisiones", testCollisionDetection);
     testRunner.runTest("Cálculo de Hitbox", testHitboxCalculation);
     
-    // Tests de Límites
     testRunner.runTest("Límites del Juego", testBoundaryLimits);
     
     testRunner.showResults();
 }
 
-// Exportar para uso en consola
+
 window.runTests = runAllTests;
 window.testRunner = testRunner;
-
-console.log("📋 Módulo de tests cargado. Ejecuta runTests() para iniciar las pruebas.");
