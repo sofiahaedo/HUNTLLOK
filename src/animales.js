@@ -486,11 +486,11 @@ class Oso extends Animal {
         this.width = 80;  // Mucho más grande que el cazador
         this.height = 80;
         this.velocidad = 1;
-        this.rangoDeteccion = 150;
+        this.rangoDeteccion = 200;
         
         // Cargar sprite sheet
         this.spriteSheet = new Image();
-        this.spriteSheet.src = '/assets/frames-oso/oso-idle-2.png';
+        this.spriteSheet.src = 'assets/frames-oso/oso-idle-2.png';
         this.imagenCargada = false;
         
         this.spriteSheet.onload = () => {
@@ -612,11 +612,9 @@ class Oso extends Animal {
             this.estaPersiguiendo = true;
             this.direccion = this.calcularDireccion(dx, dy);
             
-            const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + (dx / distancia) * this.velocidad));
-            const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + (dy / distancia) * this.velocidad));
-            
-            this.x = nuevaX;
-            this.y = nuevaY;
+            // El oso puede moverse libremente hacia el cazador para atacarlo
+            this.x = Math.max(0, Math.min(800 - this.width, this.x + (dx / distancia) * this.velocidad));
+            this.y = Math.max(0, Math.min(420 - this.height, this.y + (dy / distancia) * this.velocidad));
         } else {
             this.estaPersiguiendo = false;
             this.moverAleatoriamente();
@@ -627,7 +625,7 @@ class Oso extends Animal {
         if (this.estaVivo() && this.cooldownAtaque <= 0) {
             cazador.recibirDaño(20);
             this.cooldownAtaque = this.tiempoEntreAtaques;
-            console.log("🐻 Oso ataca! Cooldown activado");
+            console.log("🐻 Oso ataca! -20 vida");
         }
     }
 }
@@ -649,9 +647,9 @@ class Dinosaurio extends Animal {
     }
     atacar(cazador) {
         if (this.estaVivo() && this.cooldownAtaque <= 0) {
-            cazador.recibirDaño(50); // 2 ataques para matar (100/50 = 2)
+            cazador.recibirDaño(50);
             this.cooldownAtaque = this.tiempoEntreAtaques;
-            console.log(" Dinosaurio ataca! -50 vida");
+            console.log("🦕 Dinosaurio ataca! -50 vida");
         }
     }
         
@@ -670,11 +668,9 @@ class Dinosaurio extends Animal {
         const distancia = Math.sqrt(dx * dx + dy * dy);
         
         if (distancia <= this.rangoDeteccion && distancia > 0) {
-            const nuevaX = Math.max(0, Math.min(800 - this.width, this.x + (dx / distancia) * this.velocidad));
-            const nuevaY = Math.max(0, Math.min(420 - this.height, this.y + (dy / distancia) * this.velocidad));
-            
-            this.x = nuevaX;
-            this.y = nuevaY;
+            // El dinosaurio puede moverse libremente hacia el cazador para atacarlo
+            this.x = Math.max(0, Math.min(800 - this.width, this.x + (dx / distancia) * this.velocidad));
+            this.y = Math.max(0, Math.min(420 - this.height, this.y + (dy / distancia) * this.velocidad));
         } else {
             this.moverAleatoriamente();
         }
